@@ -10,9 +10,9 @@ import com.github.justalexandeer.currencyconverter.framework.datasource.local.da
 interface CurrencyEntityDao {
 
     @Query("SELECT * FROM currency_entity")
-    suspend fun getAllCurrencies(): List<CurrencyEntity>
+    suspend fun getAllCurrenciesEntity(): List<CurrencyEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveListOfCurrencyEntity(listOfCurrencyEntity: List<CurrencyEntity>)
+    suspend fun saveListOfCurrencyEntity(listOfCurrencyEntity: List<CurrencyEntity>)
 
 }

@@ -2,14 +2,12 @@ package com.github.justalexandeer.currencyconverter.framework.datasource.local.d
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = tableName)
 data class CurrencyEntity(
-    @PrimaryKey(autoGenerate = true)
-    val tableId: Long = 0L,
-    val charCode: String,
+    @PrimaryKey
     val id: String,
+    val charCode: String,
     val name: String,
     val nominal: Int,
     val numCode: String,
