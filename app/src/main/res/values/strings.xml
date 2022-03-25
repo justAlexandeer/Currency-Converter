@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Currency Converter</string>
+    <string name="converter_from_convert_from_rub">Convert from ₽</string>
+    <string name="converter_from_convert_to">Convert to</string>
+    <string name="converter_edit_text">Enter the amount of rubles</string>
+    <string name="converter_text_view_currency">Choose currency</string>
+    <string name="converter_text_view_result">Result</string>
+    <string name="converter_button_convert">Convert</string>
 </resources>

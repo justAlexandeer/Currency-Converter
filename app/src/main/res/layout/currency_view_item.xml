@@ -2,14 +2,25 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/currency_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/grid_1">
 
+    <FrameLayout
+        android:id="@+id/currency_item_left_border"
+        android:layout_width="@dimen/grid_1"
+        android:layout_height="match_parent"
+        android:background="#00FF00"
+        android:visibility="invisible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:padding="@dimen/grid_1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/grid_2"
+        android:paddingTop="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_1"
+        android:paddingBottom="@dimen/grid_1">
 
         <TextView
             android:id="@+id/currency_item_char_code"
@@ -17,17 +28,19 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/title_text"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/currency_item_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/currency_item_name"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/currency_item_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="textStart"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/currency_item_value"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/currency_item_char_code" />
 
@@ -35,8 +48,8 @@
             android:id="@+id/currency_item_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text"
             android:maxLength="8"
+            android:textSize="@dimen/text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

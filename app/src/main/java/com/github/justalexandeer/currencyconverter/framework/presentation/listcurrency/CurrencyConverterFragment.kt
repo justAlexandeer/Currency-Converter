@@ -11,16 +11,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.justalexandeer.currencyconverter.business.domain.model.Currency
+import com.github.justalexandeer.currencyconverter.business.domain.util.valueCurrency
 import com.github.justalexandeer.currencyconverter.databinding.FragmentListCurrencyBinding
 import com.github.justalexandeer.currencyconverter.framework.presentation.CurrencyConverterApplication
+import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.model.CurrencyListScreenEvent
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.model.CurrencyListScreenState
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.view.recyclerview.CurrencyAdapter
+import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.view.recyclerview.OnCurrencyClickListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class CurrencyConverterFragment: Fragment() {
+class CurrencyConverterFragment : Fragment(), OnCurrencyClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -47,19 +51,37 @@ class CurrencyConverterFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = CurrencyAdapter()
+        val adapter = CurrencyAdapter(this)
         binding.listCurrencyRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.listCurrencyRecyclerView.adapter = adapter
-
         binding.button.setOnClickListener {
             viewModel.getCurrency()
+        }
+        binding.converterLayout.convertButton.setOnClickListener {
+            viewModel.obtainEvent(
+                CurrencyListScreenEvent.OnConvertButtonClick(
+                    binding.converterLayout.converterEditText.text.toString()
+                )
+            )
         }
 
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.currencyListScreenState.collect {
+            viewModel.currencyListScreenState.collect { it ->
                 it.data?.let { list ->
                     adapter.submitList(list)
+                }
+                it.chosenCurrency?.let { currency ->
+                    binding.converterLayout.converterCurrencyTextView.text = currency.name
+                }
+                it.convertResult?.let { result ->
+                    var itemValueText = valueCurrency(result)
+                    it.chosenCurrency?.let {
+                        if (result.isNotBlank()) {
+                            itemValueText = "$itemValueText ${it.charCode}"
+                        }
+                    }
+                    binding.converterLayout.converterCurrencyResultTextView.text = itemValueText
                 }
             }
         }
@@ -68,5 +90,9 @@ class CurrencyConverterFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCurrencyClick(currency: Currency) {
+        viewModel.obtainEvent(CurrencyListScreenEvent.OnCurrencyClick(currency))
     }
 }
