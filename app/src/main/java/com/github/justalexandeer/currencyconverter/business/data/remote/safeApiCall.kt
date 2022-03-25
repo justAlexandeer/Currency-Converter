@@ -17,14 +17,15 @@ suspend fun <T> safeApiCall(
     return withContext(dispatcher) {
         try {
             withTimeout(NETWORK_TIMEOUT) {
-                DataState(DataStateStatus.Success, apiCall.invoke(), null, null)
+                DataState(DataStateStatus.Success, apiCall.invoke(), false,null, null)
             }
         } catch (throwable: Throwable) {
-            //Log.i(TAG, "${throwable.printStackTrace()}")
+//            Log.i(TAG, "${throwable.printStackTrace()}")
             when (throwable) {
                 is TimeoutCancellationException -> {
                     DataState(
                         DataStateStatus.Error,
+                        null,
                         null,
                         NETWORK_ERROR_TIMEOUT,
                         DataStateErrorType.Remote
@@ -34,6 +35,7 @@ suspend fun <T> safeApiCall(
                     DataState(
                         DataStateStatus.Error,
                         null,
+                        null,
                         NETWORK_ERROR_NO_INTERNET,
                         DataStateErrorType.Remote
                     )
@@ -42,6 +44,7 @@ suspend fun <T> safeApiCall(
                     DataState(
                         DataStateStatus.Error,
                         null,
+                        null,
                         throwable.localizedMessage,
                         DataStateErrorType.Remote
                     )
@@ -49,6 +52,7 @@ suspend fun <T> safeApiCall(
                 else -> {
                     DataState(
                         DataStateStatus.Error,
+                        null,
                         null,
                         NETWORK_ERROR_UNKNOWN,
                         DataStateErrorType.Remote
@@ -61,7 +65,7 @@ suspend fun <T> safeApiCall(
 
 private const val TAG = "SafeApiCall"
 
-const val NETWORK_TIMEOUT = 6000L
+const val NETWORK_TIMEOUT = 10000L
 
 const val NETWORK_ERROR_UNKNOWN = "Network unknown problem"
 const val NETWORK_ERROR_TIMEOUT = "Network timeout"

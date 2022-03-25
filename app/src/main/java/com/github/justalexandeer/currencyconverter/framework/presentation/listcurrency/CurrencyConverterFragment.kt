@@ -2,14 +2,22 @@ package com.github.justalexandeer.currencyconverter.framework.presentation.listc
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.justalexandeer.currencyconverter.databinding.FragmentListCurrencyBinding
 import com.github.justalexandeer.currencyconverter.framework.presentation.CurrencyConverterApplication
+import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.model.CurrencyListScreenState
+import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.view.recyclerview.CurrencyAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CurrencyConverterFragment: Fragment() {
@@ -39,8 +47,21 @@ class CurrencyConverterFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val adapter = CurrencyAdapter()
+        binding.listCurrencyRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.listCurrencyRecyclerView.adapter = adapter
+
         binding.button.setOnClickListener {
             viewModel.getCurrency()
+        }
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.currencyListScreenState.collect {
+                it.data?.let { list ->
+                    adapter.submitList(list)
+                }
+            }
         }
     }
 

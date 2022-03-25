@@ -3,7 +3,11 @@ package com.github.justalexandeer.currencyconverter.framework.presentation.listc
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.CurrencyConverterFragment
 import dagger.Subcomponent
 
-@Subcomponent(modules = [CurrencyConverterModule::class])
+@Subcomponent(
+    modules = [
+        CurrencyConverterModuleBinds::class
+    ]
+)
 interface CurrencyConverterComponent {
 
     @Subcomponent.Factory

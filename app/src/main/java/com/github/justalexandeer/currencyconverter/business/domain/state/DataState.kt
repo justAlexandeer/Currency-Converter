@@ -3,6 +3,7 @@ package com.github.justalexandeer.currencyconverter.business.domain.state
 data class DataState<T>(
     val status: DataStateStatus,
     val data: T?,
+    val isDataFromCache: Boolean?,
     val errorMessage: String?,
     val errorType: DataStateErrorType?
 )

@@ -13,6 +13,7 @@ import javax.inject.Singleton
         AppModule::class,
         AppModuleBinds::class,
         ViewModelBuilderModule::class,
+        DispatchersModule::class,
         SubcomponentModule::class
     ]
 )
