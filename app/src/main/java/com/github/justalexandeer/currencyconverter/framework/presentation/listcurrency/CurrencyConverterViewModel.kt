@@ -37,7 +37,7 @@ class CurrencyConverterViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getAllCurrenciesUseCase(true).collect {
+            getAllCurrenciesUseCase(false, false).collect {
                 if (it.status == DataStateStatus.Success) {
                     handleSuccessAllCurrenciesUseCase(it)
                 } else {
@@ -59,7 +59,7 @@ class CurrencyConverterViewModel @Inject constructor(
 
     fun getCurrency() {
         viewModelScope.launch {
-            getAllCurrenciesUseCase(false).collect {
+            getAllCurrenciesUseCase(false, true).collect {
                 if (it.status == DataStateStatus.Success) {
                     handleSuccessAllCurrenciesUseCase(it)
                 } else {
@@ -92,11 +92,7 @@ class CurrencyConverterViewModel @Inject constructor(
             _currencyListScreenState.value = _currencyListScreenState.value.copy(
                 convertResult = if (!currentConverterValue.isNullOrBlank()) {
                     currentConverterValue?.let {
-                        if((chosenCurrency.value / chosenCurrency.nominal) < 1) {
-                            (it.toDouble() * (chosenCurrency.value / chosenCurrency.nominal)).toString()
-                        } else {
-                            (it.toDouble() / (chosenCurrency.value / chosenCurrency.nominal)).toString()
-                        }
+                        (it.toDouble() / (chosenCurrency.value / chosenCurrency.nominal)).toString()
                     }
                 } else {
                     //todo send error

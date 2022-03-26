@@ -58,8 +58,13 @@ class CurrencyConverterFragment : Fragment(), OnCurrencyClickListener {
         binding.button.setOnClickListener {
             viewModel.getCurrency()
         }
+
         binding.converterLayout.converterEditText.addTextChangedListener {
             viewModel.obtainEvent(CurrencyListScreenEvent.ConvertValueEditTextChange(it.toString()))
+        }
+
+        binding.swiperefresh.setOnRefreshListener {
+            viewModel.getCurrency()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -72,6 +77,10 @@ class CurrencyConverterFragment : Fragment(), OnCurrencyClickListener {
                 }
                 it.convertResult?.let { result ->
                     binding.converterLayout.converterCurrencyResultTextView.text = result
+                }
+                it.isLoading.let {
+                    if (!it)
+                        binding.swiperefresh.isRefreshing = it
                 }
             }
         }
