@@ -1,6 +1,5 @@
 package com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.justalexandeer.currencyconverter.business.domain.model.Currency
@@ -15,11 +14,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 class CurrencyConverterViewModel @Inject constructor(
     private val getAllCurrenciesUseCase: GetAllCurrenciesUseCase,
 ) : ViewModel() {
+
+    // todo Если пользователь выбрал валюту для конвертации, но после обновления списка она пропала
 
     private val _currencyListScreenState: MutableStateFlow<CurrencyListScreenState> =
         MutableStateFlow(
@@ -35,19 +35,9 @@ class CurrencyConverterViewModel @Inject constructor(
 
     private var currentConverterValue: String? = null
 
-    fun obtainEvent(event: CurrencyListScreenEvent) {
-        when (event) {
-            is CurrencyListScreenEvent.OnCurrencyClick -> handleOnCurrencyClick(event.currency)
-            is CurrencyListScreenEvent.OnConvertButtonClick -> {
-                currentConverterValue = event.value
-                handleConverterResult()
-            }
-        }
-    }
-
-    fun getCurrency() {
+    init {
         viewModelScope.launch {
-            getAllCurrenciesUseCase().collect {
+            getAllCurrenciesUseCase(true).collect {
                 if (it.status == DataStateStatus.Success) {
                     handleSuccessAllCurrenciesUseCase(it)
                 } else {
@@ -57,7 +47,29 @@ class CurrencyConverterViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnCurrencyClick(currency: Currency) {
+    fun obtainEvent(event: CurrencyListScreenEvent) {
+        when (event) {
+            is CurrencyListScreenEvent.OnCurrencyClick -> handleChangeChosenCurrency(event.currency)
+            is CurrencyListScreenEvent.ConvertValueEditTextChange -> {
+                currentConverterValue = event.value
+                handleConverterResult()
+            }
+        }
+    }
+
+    fun getCurrency() {
+        viewModelScope.launch {
+            getAllCurrenciesUseCase(false).collect {
+                if (it.status == DataStateStatus.Success) {
+                    handleSuccessAllCurrenciesUseCase(it)
+                } else {
+                    handleErrorAllCurrenciesUseCase(it)
+                }
+            }
+        }
+    }
+
+    private fun handleChangeChosenCurrency(currency: Currency) {
         if(currency != _currencyListScreenState.value.chosenCurrency) {
             _currencyListScreenState.value = _currencyListScreenState.value.copy(
                 data = _currencyListScreenState.value.data?.map {
@@ -71,6 +83,7 @@ class CurrencyConverterViewModel @Inject constructor(
                 chosenCurrency = currency
             )
         }
+        handleConverterResult()
     }
 
     private fun handleConverterResult() {
@@ -79,11 +92,15 @@ class CurrencyConverterViewModel @Inject constructor(
             _currencyListScreenState.value = _currencyListScreenState.value.copy(
                 convertResult = if (!currentConverterValue.isNullOrBlank()) {
                     currentConverterValue?.let {
-                        (it.toDouble() / chosenCurrency.value).toString()
+                        if((chosenCurrency.value / chosenCurrency.nominal) < 1) {
+                            (it.toDouble() * (chosenCurrency.value / chosenCurrency.nominal)).toString()
+                        } else {
+                            (it.toDouble() / (chosenCurrency.value / chosenCurrency.nominal)).toString()
+                        }
                     }
                 } else {
                     //todo send error
-                    null
+                    ""
                 }
             )
         } else {
@@ -106,6 +123,7 @@ class CurrencyConverterViewModel @Inject constructor(
                         },
                         isLoading = false
                     )
+                    updateChosenCurrencyAndConvertResult()
                 } else {
                     _currencyListScreenState.value = _currencyListScreenState.value.copy(
                         data = listOfCurrency.map {
@@ -118,17 +136,23 @@ class CurrencyConverterViewModel @Inject constructor(
                         lastUpdate = System.currentTimeMillis(),
                         isLoading = false
                     )
+                    updateChosenCurrencyAndConvertResult()
                 }
             }
         }
     }
 
-//    private fun changeChosenCurrency(currency: Currency) {
-//        _currencyListScreenState.value = _currencyListScreenState.value.copy(
-//            chosenCurrency = currency
-//        )
-//        Log.i("handleConverterResult", "change ${_currencyListScreenState.value.chosenCurrency}")
-//    }
+    private fun updateChosenCurrencyAndConvertResult() {
+        val updatedChosenCurrency = _currencyListScreenState.value.data?.find {
+            it.currency.id == _currencyListScreenState.value.chosenCurrency?.id
+        }
+        updatedChosenCurrency?.let {
+            _currencyListScreenState.value = _currencyListScreenState.value.copy(
+                chosenCurrency = updatedChosenCurrency.currency
+            )
+            handleConverterResult()
+        }
+    }
 
     private fun handleErrorAllCurrenciesUseCase(dataState: DataState<List<Currency>>) {
         dataState.errorMessage?.let { errorMessage ->

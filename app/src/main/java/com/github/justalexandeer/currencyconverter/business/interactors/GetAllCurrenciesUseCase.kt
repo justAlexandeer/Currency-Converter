@@ -1,5 +1,6 @@
 package com.github.justalexandeer.currencyconverter.business.interactors
 
+import android.util.Log
 import com.github.justalexandeer.currencyconverter.business.data.local.abstraction.CurrencyLocalRepository
 import com.github.justalexandeer.currencyconverter.business.data.remote.abstraction.CurrencyRemoteRepository
 import com.github.justalexandeer.currencyconverter.business.data.remote.safeApiCall
@@ -22,24 +23,47 @@ class GetAllCurrenciesUseCase @Inject constructor(
     private val dispatcherIO: CoroutineDispatcher
 ) {
 
-    suspend operator fun invoke(): Flow<DataState<List<Currency>>> = flow {
-        var localDataState = currencyLocalRepository.getAllCurrencies()
-        emit(createDataStateSuccess(localDataState, true))
+    suspend operator fun invoke(flag: Boolean): Flow<DataState<List<Currency>>> = flow {
+        if(flag) {
+            var localDataState = currencyLocalRepository.getAllCurrencies()
+            emit(createDataStateSuccess(localDataState, true))
 
-        val remoteDataState = safeApiCall(dispatcherIO) {
-            currencyRemoteRepository.getAllCurrency()
-        }
-        if (remoteDataState.status == DataStateStatus.Success) {
-            if (!remoteDataState.data.isNullOrEmpty()) {
-                currencyLocalRepository.saveListOfCurrency(remoteDataState.data)
-                localDataState = currencyLocalRepository.getAllCurrencies()
-                emit(createDataStateSuccess(localDataState, false))
+            val remoteDataState = safeApiCall(dispatcherIO) {
+                currencyRemoteRepository.getAllCurrency()
+            }
+            if (remoteDataState.status == DataStateStatus.Success) {
+                if (!remoteDataState.data.isNullOrEmpty()) {
+                    currencyLocalRepository.saveListOfCurrency(remoteDataState.data)
+                    localDataState = currencyLocalRepository.getAllCurrencies()
+                    emit(createDataStateSuccess(localDataState, false))
+                } else {
+                    emit(createDataStateError(REMOTE_DATA_IS_NULL_OR_EMPTY))
+                }
             } else {
-                emit(createDataStateError(REMOTE_DATA_IS_NULL_OR_EMPTY))
+                remoteDataState.errorMessage?.let {
+                    emit(createDataStateError(remoteDataState.errorMessage))
+                }
             }
         } else {
-            remoteDataState.errorMessage?.let {
-                emit(createDataStateError(remoteDataState.errorMessage))
+            var localDataState = currencyLocalRepository.getAllCurrencies()
+            val remoteDataState = safeApiCall(dispatcherIO) {
+                currencyRemoteRepository.getAllCurrency()
+            }
+            if (remoteDataState.status == DataStateStatus.Success) {
+                if (!remoteDataState.data.isNullOrEmpty()) {
+                    val mutableList = remoteDataState.data.toMutableList()
+                    val currency = mutableList[0]
+                    mutableList[0] = Currency(currency.charCode, currency.id, currency.name, currency.nominal, currency.numCode, currency.previous, 100.0)
+                    currencyLocalRepository.saveListOfCurrency(mutableList)
+                    localDataState = currencyLocalRepository.getAllCurrencies()
+                    emit(createDataStateSuccess(localDataState, false))
+                } else {
+                    emit(createDataStateError(REMOTE_DATA_IS_NULL_OR_EMPTY))
+                }
+            } else {
+                remoteDataState.errorMessage?.let {
+                    emit(createDataStateError(remoteDataState.errorMessage))
+                }
             }
         }
     }

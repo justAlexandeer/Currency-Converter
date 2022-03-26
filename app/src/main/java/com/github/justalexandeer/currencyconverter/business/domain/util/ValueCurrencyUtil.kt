@@ -13,16 +13,3 @@ fun valueCurrency(value: Double): String {
         valueString
     }
 }
-
-fun valueCurrency(value: String): String {
-    return if (value.length > 6) {
-        val concatValue = value.substring(0, 6)
-        if (concatValue.last() == '.') {
-            concatValue.dropLast(1)
-        } else {
-            concatValue
-        }
-    } else {
-        value
-    }
-}

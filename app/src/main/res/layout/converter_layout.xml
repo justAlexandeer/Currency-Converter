@@ -61,9 +61,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/converter_text_view_result"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/convert_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/converter_convert_to_text_view" />
 
@@ -79,17 +80,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/converter_currency_text_view"
         app:layout_constraintTop_toTopOf="@id/converter_result_text_view" />
-
-    <Button
-        android:id="@+id/convert_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_2"
-        android:text="@string/converter_button_convert"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/converter_result_text_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

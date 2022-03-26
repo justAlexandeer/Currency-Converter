@@ -2,10 +2,13 @@ package com.github.justalexandeer.currencyconverter.framework.presentation.listc
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -16,10 +19,8 @@ import com.github.justalexandeer.currencyconverter.business.domain.util.valueCur
 import com.github.justalexandeer.currencyconverter.databinding.FragmentListCurrencyBinding
 import com.github.justalexandeer.currencyconverter.framework.presentation.CurrencyConverterApplication
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.model.CurrencyListScreenEvent
-import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.model.CurrencyListScreenState
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.view.recyclerview.CurrencyAdapter
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.view.recyclerview.OnCurrencyClickListener
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -57,14 +58,9 @@ class CurrencyConverterFragment : Fragment(), OnCurrencyClickListener {
         binding.button.setOnClickListener {
             viewModel.getCurrency()
         }
-        binding.converterLayout.convertButton.setOnClickListener {
-            viewModel.obtainEvent(
-                CurrencyListScreenEvent.OnConvertButtonClick(
-                    binding.converterLayout.converterEditText.text.toString()
-                )
-            )
+        binding.converterLayout.converterEditText.addTextChangedListener {
+            viewModel.obtainEvent(CurrencyListScreenEvent.ConvertValueEditTextChange(it.toString()))
         }
-
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.currencyListScreenState.collect { it ->
@@ -75,13 +71,7 @@ class CurrencyConverterFragment : Fragment(), OnCurrencyClickListener {
                     binding.converterLayout.converterCurrencyTextView.text = currency.name
                 }
                 it.convertResult?.let { result ->
-                    var itemValueText = valueCurrency(result)
-                    it.chosenCurrency?.let {
-                        if (result.isNotBlank()) {
-                            itemValueText = "$itemValueText ${it.charCode}"
-                        }
-                    }
-                    binding.converterLayout.converterCurrencyResultTextView.text = itemValueText
+                    binding.converterLayout.converterCurrencyResultTextView.text = result
                 }
             }
         }

@@ -4,5 +4,5 @@ import com.github.justalexandeer.currencyconverter.business.domain.model.Currenc
 
 sealed class CurrencyListScreenEvent {
     data class OnCurrencyClick(val currency: Currency): CurrencyListScreenEvent()
-    data class OnConvertButtonClick(val value: String): CurrencyListScreenEvent()
+    data class ConvertValueEditTextChange(val value: String): CurrencyListScreenEvent()
 }
