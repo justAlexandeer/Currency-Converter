@@ -1,5 +1,6 @@
 package com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.view
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -25,8 +26,18 @@ class CurrencyViewHolder(
             binding.currencyItemCharCode.text = it.charCode
             binding.currencyItemName.text = it.name
 
-            val itemValueText = "${valueCurrency(it.value / it.nominal)} ₽"
+            val itemValueText = "${valueCurrency(it.value / it.nominal, 6)} ₽"
             binding.currencyItemValue.text = itemValueText
+            val itemValueChange = it.value - it.previous
+            if(itemValueChange > 0) {
+                val itemValueChangeText = "+${valueCurrency(itemValueChange, 4)} ₽"
+                binding.currencyItemValueChange.setTextColor(Color.GREEN)
+                binding.currencyItemValueChange.text = itemValueChangeText
+            } else {
+                val itemValueChangeText = "${valueCurrency(itemValueChange, 5)} ₽"
+                binding.currencyItemValueChange.setTextColor(Color.RED)
+                binding.currencyItemValueChange.text = itemValueChangeText
+            }
         }
     }
 

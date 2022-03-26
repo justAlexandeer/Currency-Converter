@@ -68,18 +68,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/converter_convert_to_text_view" />
 
-    <TextView
-        android:id="@+id/converter_currency_result_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/grid_0_5"
-        android:paddingEnd="@dimen/grid_0_5"
-        android:text=""
-        android:textAlignment="textStart"
-        app:layout_constraintBottom_toBottomOf="@id/converter_result_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/converter_currency_text_view"
-        app:layout_constraintTop_toTopOf="@id/converter_result_text_view" />
+        <TextView
+            android:id="@+id/converter_currency_result_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:layout_gravity="fill"
+            android:maxLines="1"
+            android:paddingStart="@dimen/grid_0_5"
+            android:paddingEnd="@dimen/grid_0_5"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="@id/converter_result_text_view"
+            app:layout_constraintEnd_toStartOf="@id/converter_currency_result_char_code_text_view"
+            app:layout_constraintStart_toStartOf="@id/converter_currency_text_view"
+            app:layout_constraintTop_toTopOf="@id/converter_result_text_view" />
 
+        <TextView
+            android:id="@+id/converter_currency_result_char_code_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/grid_0_5"
+            android:paddingEnd="@dimen/grid_0_5"
+            android:text=""
+            android:textAlignment="textStart"
+            app:layout_constraintBottom_toBottomOf="@id/converter_currency_result_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/converter_currency_result_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

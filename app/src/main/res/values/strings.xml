@@ -6,4 +6,5 @@
     <string name="converter_text_view_currency">Choose currency</string>
     <string name="converter_text_view_result">Result</string>
     <string name="converter_button_convert">Convert</string>
+    <string name="list_currency_last_update">Last update:</string>
 </resources>

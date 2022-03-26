@@ -40,7 +40,7 @@
             android:maxLines="1"
             android:textAlignment="textStart"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/currency_item_value"
+            app:layout_constraintEnd_toStartOf="@id/currency_item_value_change"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/currency_item_char_code" />
 
@@ -49,10 +49,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLength="8"
+            android:text="123"
             android:textSize="@dimen/text"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/currency_item_value_change"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/currency_item_value_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="8"
+            android:text="123"
+            android:textSize="@dimen/small_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/currency_item_value"
+            app:layout_constraintStart_toStartOf="@+id/currency_item_value"
+            app:layout_constraintTop_toBottomOf="@id/currency_item_value" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

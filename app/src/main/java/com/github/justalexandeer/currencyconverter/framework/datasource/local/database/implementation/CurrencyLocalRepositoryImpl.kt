@@ -19,4 +19,8 @@ class CurrencyLocalRepositoryImpl @Inject constructor(
 
     override suspend fun saveListOfCurrency(listOfCurrency: List<Currency>) =
         currencyEntityDao.saveListOfCurrencyEntity(mapper.fromListCurrencyToListCurrencyEntity(listOfCurrency))
+
+    override suspend fun deleteAllCurrencies() =
+        currencyEntityDao.deleteAllCurrenciesEntity()
+
 }

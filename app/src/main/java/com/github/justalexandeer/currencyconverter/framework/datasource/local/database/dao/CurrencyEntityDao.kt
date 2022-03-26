@@ -15,4 +15,7 @@ interface CurrencyEntityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveListOfCurrencyEntity(listOfCurrencyEntity: List<CurrencyEntity>)
 
+    @Query("DELETE FROM currency_entity")
+    suspend fun deleteAllCurrenciesEntity()
+
 }

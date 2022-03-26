@@ -42,6 +42,7 @@ class GetAllCurrenciesUseCase @Inject constructor(
                         currency.previous,
                         100.0
                     )
+                    currencyLocalRepository.deleteAllCurrencies()
                     currencyLocalRepository.saveListOfCurrency(mutableList)
                     localDataState = currencyLocalRepository.getAllCurrencies()
                     emit(createDataStateSuccess(localDataState, false))
@@ -60,6 +61,7 @@ class GetAllCurrenciesUseCase @Inject constructor(
                 }
                 if (remoteDataState.status == DataStateStatus.Success) {
                     if (!remoteDataState.data.isNullOrEmpty()) {
+                        currencyLocalRepository.deleteAllCurrencies()
                         currencyLocalRepository.saveListOfCurrency(remoteDataState.data)
                         val localDataState = currencyLocalRepository.getAllCurrencies()
                         emit(createDataStateSuccess(localDataState, false))
@@ -80,6 +82,7 @@ class GetAllCurrenciesUseCase @Inject constructor(
                 }
                 if (remoteDataState.status == DataStateStatus.Success) {
                     if (!remoteDataState.data.isNullOrEmpty()) {
+                        currencyLocalRepository.deleteAllCurrencies()
                         currencyLocalRepository.saveListOfCurrency(remoteDataState.data)
                         localDataState = currencyLocalRepository.getAllCurrencies()
                         emit(createDataStateSuccess(localDataState, false))
