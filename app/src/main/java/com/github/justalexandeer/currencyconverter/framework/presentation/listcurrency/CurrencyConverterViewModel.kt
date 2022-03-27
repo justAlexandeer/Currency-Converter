@@ -1,12 +1,14 @@
 package com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.justalexandeer.currencyconverter.business.domain.model.Currency
 import com.github.justalexandeer.currencyconverter.business.domain.model.CurrencyViewHolderState
 import com.github.justalexandeer.currencyconverter.business.domain.state.DataState
 import com.github.justalexandeer.currencyconverter.business.domain.state.DataStateStatus
+import com.github.justalexandeer.currencyconverter.business.domain.state.SortType
+import com.github.justalexandeer.currencyconverter.business.domain.util.sortListCurrencyUtil
+import com.github.justalexandeer.currencyconverter.business.domain.util.sortListCurrencyViewHolderStateUtil
 import com.github.justalexandeer.currencyconverter.business.interactors.GetAllCurrenciesUseCase
 import com.github.justalexandeer.currencyconverter.business.interactors.GetLastUpdateCurrenciesUseCase
 import com.github.justalexandeer.currencyconverter.business.interactors.SaveLastUpdateCurrenciesUseCase
@@ -26,8 +28,6 @@ class CurrencyConverterViewModel @Inject constructor(
     @IoDispatcher private val dispatcherIO: CoroutineDispatcher
 ) : ViewModel() {
 
-    // todo check code
-
     private val _currencyListScreenState: MutableStateFlow<CurrencyListScreenState> =
         MutableStateFlow(
             CurrencyListScreenState(
@@ -42,40 +42,38 @@ class CurrencyConverterViewModel @Inject constructor(
     private val _errors : MutableSharedFlow<String> = MutableSharedFlow()
     val error = _errors.asSharedFlow()
 
+    private var currentSortType: SortType = SortType.AlphabeticalAsc
     private var currentConverterValue: String? = null
 
     init {
-        viewModelScope.launch {
-            _currencyListScreenState.value = _currencyListScreenState.value.copy(
-                isLoading = true
-            )
-            getAllCurrenciesUseCase(false, false).collect {
-                if (it.status == DataStateStatus.Success) {
-                    handleSuccessAllCurrenciesUseCase(it)
-                } else {
-                    handleErrorAllCurrenciesUseCase(it)
-                }
-            }
-        }
+        getListCurrencies(false)
         startAutoUpdateCurrencyList()
     }
 
     fun obtainEvent(event: CurrencyListScreenEvent) {
         when (event) {
-            is CurrencyListScreenEvent.OnCurrencyClick -> handleChangeChosenCurrency(event.currency)
+            is CurrencyListScreenEvent.OnCurrencyClick -> {
+                handleChangeChosenCurrency(event.currency)
+            }
             is CurrencyListScreenEvent.ConvertValueEditTextChange -> {
                 currentConverterValue = event.value
                 handleConverterResult()
             }
+            is CurrencyListScreenEvent.SortTypeChange -> {
+                handleSortTypeChange(event.sortType)
+            }
+            is CurrencyListScreenEvent.ForceUpdate -> {
+                getListCurrencies(true)
+            }
         }
     }
 
-    fun getCurrency() {
+    private fun getListCurrencies(forceUpdate: Boolean) {
         viewModelScope.launch {
             _currencyListScreenState.value = _currencyListScreenState.value.copy(
                 isLoading = true
             )
-            getAllCurrenciesUseCase(false, true).collect {
+            getAllCurrenciesUseCase(forceUpdate).collect {
                 if (it.status == DataStateStatus.Success) {
                     handleSuccessAllCurrenciesUseCase(it)
                 } else {
@@ -124,9 +122,10 @@ class CurrencyConverterViewModel @Inject constructor(
         dataState.data?.let { listOfCurrency ->
             dataState.isDataFromCache?.let {
                 val chosenCurrency = _currencyListScreenState.value.chosenCurrency
+                val sortedListOfCurrency = sortListCurrencyUtil(currentSortType, listOfCurrency)
                 if (dataState.isDataFromCache) {
                     _currencyListScreenState.value = _currencyListScreenState.value.copy(
-                        data = listOfCurrency.map {
+                        data = sortedListOfCurrency.map {
                             if (chosenCurrency?.id == it.id) {
                                 CurrencyViewHolderState(it, true)
                             } else {
@@ -139,7 +138,7 @@ class CurrencyConverterViewModel @Inject constructor(
                 } else {
                     saveLastUpdateCurrenciesUseCase(System.currentTimeMillis())
                     _currencyListScreenState.value = _currencyListScreenState.value.copy(
-                        data = listOfCurrency.map {
+                        data = sortedListOfCurrency.map {
                             if (chosenCurrency?.id == it.id) {
                                 CurrencyViewHolderState(it, true)
                             } else {
@@ -155,19 +154,15 @@ class CurrencyConverterViewModel @Inject constructor(
         }
     }
 
-    private fun startAutoUpdateCurrencyList() {
-        viewModelScope.launch(dispatcherIO) {
-            while (true) {
-                delay(AUTO_UPDATE_DURATION)
-                getAllCurrenciesUseCase(true, false).collect {
-                    if (it.status == DataStateStatus.Success) {
-                        handleSuccessAllCurrenciesUseCase(it)
-                    } else {
-                        handleErrorAllCurrenciesUseCase(it)
-                    }
-                }
+    private fun handleErrorAllCurrenciesUseCase(dataState: DataState<List<Currency>>) {
+        dataState.errorMessage?.let { errorMessage ->
+            viewModelScope.launch {
+                _errors.emit(errorMessage)
             }
         }
+        _currencyListScreenState.value = _currencyListScreenState.value.copy(
+            isLoading = false
+        )
     }
 
     private fun updateChosenCurrencyAndConvertResult() {
@@ -180,15 +175,30 @@ class CurrencyConverterViewModel @Inject constructor(
         handleConverterResult()
     }
 
-    private fun handleErrorAllCurrenciesUseCase(dataState: DataState<List<Currency>>) {
-        dataState.errorMessage?.let { errorMessage ->
-            viewModelScope.launch {
-                _errors.emit(errorMessage)
+    private fun handleSortTypeChange(sortType: SortType) {
+        currentSortType = sortType
+        _currencyListScreenState.value = _currencyListScreenState.value.copy(
+            data = _currencyListScreenState.value.data?.let {
+                sortListCurrencyViewHolderStateUtil(currentSortType,
+                    it
+                )
+            }
+        )
+    }
+
+    private fun startAutoUpdateCurrencyList() {
+        viewModelScope.launch(dispatcherIO) {
+            while (true) {
+                delay(AUTO_UPDATE_DURATION)
+                getAllCurrenciesUseCase(true).collect {
+                    if (it.status == DataStateStatus.Success) {
+                        handleSuccessAllCurrenciesUseCase(it)
+                    } else {
+                        handleErrorAllCurrenciesUseCase(it)
+                    }
+                }
             }
         }
-        _currencyListScreenState.value = _currencyListScreenState.value.copy(
-            isLoading = false
-        )
     }
 
     companion object {

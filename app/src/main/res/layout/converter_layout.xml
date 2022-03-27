@@ -1,72 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="0dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/grid_1">
+    android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/converter_convert_from_text_view"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:text="@string/converter_from_convert_from_rub"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/converter_edit_text"
-        app:layout_constraintEnd_toStartOf="@id/converter_edit_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/converter_edit_text" />
+        android:padding="@dimen/grid_1">
 
-    <EditText
-        android:id="@+id/converter_edit_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/converter_edit_text"
-        android:inputType="numberDecimal"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/converter_convert_from_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/converter_convert_from_text_view"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/converter_convert_from_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_2"
+            android:text="@string/converter_from_convert_from_rub"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/converter_edit_text"
+            app:layout_constraintEnd_toStartOf="@id/converter_edit_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/converter_edit_text" />
 
-    <TextView
-        android:id="@+id/converter_convert_to_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_1"
-        android:text="@string/converter_from_convert_to"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/converter_result_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/converter_edit_text" />
+        <EditText
+            android:id="@+id/converter_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/converter_edit_text"
+            android:inputType="numberDecimal"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/converter_convert_from_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/converter_convert_from_text_view"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/converter_currency_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:paddingStart="@dimen/grid_0_5"
-        android:paddingEnd="@dimen/grid_0_5"
-        android:text="@string/converter_text_view_currency"
-        android:textAlignment="textStart"
-        app:layout_constraintBottom_toBottomOf="@id/converter_convert_to_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/converter_edit_text"
-        app:layout_constraintTop_toTopOf="@id/converter_convert_to_text_view" />
+        <TextView
+            android:id="@+id/converter_convert_to_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/grid_1"
+            android:text="@string/converter_from_convert_to"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/converter_result_text_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/converter_edit_text" />
 
-    <TextView
-        android:id="@+id/converter_result_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/converter_text_view_result"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/converter_convert_to_text_view" />
+        <TextView
+            android:id="@+id/converter_currency_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="@dimen/grid_0_5"
+            android:paddingEnd="@dimen/grid_0_5"
+            android:text="@string/converter_text_view_currency"
+            android:textAlignment="textStart"
+            app:layout_constraintBottom_toBottomOf="@id/converter_convert_to_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/converter_edit_text"
+            app:layout_constraintTop_toTopOf="@id/converter_convert_to_text_view" />
+
+        <TextView
+            android:id="@+id/converter_result_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/grid_2"
+            android:layout_marginBottom="@dimen/grid_1"
+            android:text="@string/converter_text_view_result"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/converter_convert_to_text_view" />
 
         <TextView
             android:id="@+id/converter_currency_result_text_view"
@@ -95,4 +101,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/converter_currency_result_text_view" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

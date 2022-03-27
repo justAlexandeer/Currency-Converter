@@ -7,6 +7,9 @@
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/CurrencyConverter/app/src/main/res/layout/converter_layout.xml" value="0.4" />
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/CurrencyConverter/app/src/main/res/layout/currency_view_item.xml" value="0.4630225080385852" />
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/CurrencyConverter/app/src/main/res/layout/fragment_list_currency.xml" value="0.2509057971014493" />
+        <entry key="..\:/Users/Alexandr/AndroidStudioProjects/CurrencyConverter/app/src/main/res/menu/currency_converter_menu.xml" value="0.2520833333333333" />
+        <entry key="..\:/Users/Alexandr/AndroidStudioProjects/CurrencyConverter/app/src/main/res/menu/sort_menu.xml" value="0.2520833333333333" />
+        <entry key="..\:/Users/Alexandr/AndroidStudioProjects/CurrencyConverter/app/src/main/res/menu/sort_type_menu.xml" value="0.2520833333333333" />
       </map>
     </option>
   </component>

@@ -7,4 +7,9 @@
     <string name="converter_text_view_result">Result</string>
     <string name="converter_button_convert">Convert</string>
     <string name="list_currency_last_update">Last update:</string>
+    <string name="sort_type_converter_menu">Sort type</string>
+    <string name="sort_type_name_alphabetical_asc">Alphabetical ASC</string>
+    <string name="sort_type_name_alphabetical_desc">Alphabetical DESC</string>
+    <string name="sort_type_name_value_asc">Value ASC</string>
+    <string name="sort_type_name_value_desc">Value DESC</string>
 </resources>
