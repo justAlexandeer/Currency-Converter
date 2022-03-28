@@ -6,6 +6,7 @@ import com.github.justalexandeer.currencyconverter.business.data.remote.abstract
 import com.github.justalexandeer.currencyconverter.business.data.remote.safeApiCall
 import com.github.justalexandeer.currencyconverter.business.domain.model.Currency
 import com.github.justalexandeer.currencyconverter.business.domain.state.DataState
+import com.github.justalexandeer.currencyconverter.business.domain.state.DataStateErrorType
 import com.github.justalexandeer.currencyconverter.business.domain.state.DataStateStatus
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.model.CurrencyListScreenState
 import kotlinx.coroutines.CoroutineDispatcher
@@ -78,7 +79,7 @@ private fun createDataStateSuccess(
 }
 
 private fun createDataStateError(errorMessage: String): DataState<List<Currency>> {
-    return DataState(DataStateStatus.Error, null, null, errorMessage, null)
+    return DataState(DataStateStatus.Error, null, null, errorMessage, DataStateErrorType.Remote)
 }
 
 

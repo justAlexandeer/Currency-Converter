@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.github.justalexandeer.currencyconverter.business.domain.model.CurrencyViewHolderState
-import com.github.justalexandeer.currencyconverter.business.domain.util.valueCurrency
+import com.github.justalexandeer.currencyconverter.business.domain.util.convertValueCurrency
 import com.github.justalexandeer.currencyconverter.databinding.CurrencyViewItemBinding
 import com.github.justalexandeer.currencyconverter.framework.presentation.listcurrency.view.recyclerview.OnCurrencyClickListener
 
@@ -26,15 +26,15 @@ class CurrencyViewHolder(
             binding.currencyItemCharCode.text = it.charCode
             binding.currencyItemName.text = it.name
 
-            val itemValueText = "${valueCurrency(it.value / it.nominal, 6)} ₽"
+            val itemValueText = "${convertValueCurrency(it.value / it.nominal, 6)} ₽"
             binding.currencyItemValue.text = itemValueText
             val itemValueChange = it.value - it.previous
             if(itemValueChange > 0) {
-                val itemValueChangeText = "+${valueCurrency(itemValueChange, 4)} ₽"
+                val itemValueChangeText = "+${convertValueCurrency(itemValueChange, 4)} ₽"
                 binding.currencyItemValueChange.setTextColor(Color.GREEN)
                 binding.currencyItemValueChange.text = itemValueChangeText
             } else {
-                val itemValueChangeText = "${valueCurrency(itemValueChange, 5)} ₽"
+                val itemValueChangeText = "${convertValueCurrency(itemValueChange, 5)} ₽"
                 binding.currencyItemValueChange.setTextColor(Color.RED)
                 binding.currencyItemValueChange.text = itemValueChangeText
             }

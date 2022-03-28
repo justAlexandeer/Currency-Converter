@@ -9,8 +9,8 @@ fun sortListCurrencyUtil(
     unsortedList: List<Currency>
 ): List<Currency> {
     return when (sortType) {
-        SortType.AlphabeticalAsc -> unsortedList.sortedBy { it.name }
-        SortType.AlphabeticalDesc -> unsortedList.sortedByDescending { it.name }
+        SortType.AlphabeticalAsc -> unsortedList.sortedBy { it.charCode }
+        SortType.AlphabeticalDesc -> unsortedList.sortedByDescending { it.charCode }
         SortType.ValueAsc -> unsortedList.sortedBy { it.nominal / it.value }
         SortType.ValueDesc -> unsortedList.sortedByDescending { it.nominal / it.value }
     }

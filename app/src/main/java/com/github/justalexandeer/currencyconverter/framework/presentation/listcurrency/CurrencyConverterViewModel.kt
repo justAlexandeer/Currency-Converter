@@ -134,7 +134,6 @@ class CurrencyConverterViewModel @Inject constructor(
                         },
                         isLoading = false
                     )
-                    updateChosenCurrencyAndConvertResult()
                 } else {
                     saveLastUpdateCurrenciesUseCase(System.currentTimeMillis())
                     _currencyListScreenState.value = _currencyListScreenState.value.copy(
@@ -148,8 +147,8 @@ class CurrencyConverterViewModel @Inject constructor(
                         lastUpdate = getLastUpdateCurrenciesUseCase(),
                         isLoading = false
                     )
-                    updateChosenCurrencyAndConvertResult()
                 }
+                updateChosenCurrencyAndConvertResult()
             }
         }
     }
